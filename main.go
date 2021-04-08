@@ -64,16 +64,16 @@ func lineHandler(w http.ResponseWriter, r *http.Request) {
 				}
 				req.Header.Set("User-Agent", "experiment")
 
-				res, getErr := spaceClient.Do(req)
+				httpResponse, getErr := spaceClient.Do(req)
 				if getErr != nil {
 					log.Fatal(getErr)
 				}
 
-				if res.Body != nil {
-					defer res.Body.Close()
+				if httpResponse.Body != nil {
+					defer httpResponse.Body.Close()
 				}
 
-				body, readErr := ioutil.ReadAll(res.Body)
+				body, readErr := ioutil.ReadAll(httpResponse.Body)
 				if readErr != nil {
 					log.Fatal(readErr)
 				}
