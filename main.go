@@ -53,6 +53,9 @@ func lineHandler(w http.ResponseWriter, r *http.Request) {
 				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyMessage)).Do(); err != nil {
 					log.Print(err)
 				}
+				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("hi!")).Do(); err != nil {
+					log.Print(err)
+				}
 				key := os.Getenv("OPENWEATHER_API_KEY")
 				url := "http://api.openweathermap.org/geo/1.0/direct?q=" + res[0] + "&limit=5&appid=" + key
 				spaceClient := http.Client{
