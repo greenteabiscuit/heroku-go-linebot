@@ -49,13 +49,6 @@ func lineHandler(w http.ResponseWriter, r *http.Request) {
 			case *linebot.TextMessage:
 				replyMessage := message.Text
 				res := strings.Split(replyMessage, ",")
-				replyMessage = res[0] + "から" + res[1] + "を移動しました"
-				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyMessage)).Do(); err != nil {
-					log.Print(err)
-				}
-				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("hi!")).Do(); err != nil {
-					log.Print(err)
-				}
 				key := os.Getenv("OPENWEATHER_API_KEY")
 				url := "http://api.openweathermap.org/geo/1.0/direct?q=" + res[0] + "&limit=5&appid=" + key
 				spaceClient := http.Client{
@@ -87,10 +80,8 @@ func lineHandler(w http.ResponseWriter, r *http.Request) {
 				}
 				replyMessageLon, replyMessageLat := gl[0].Lon, gl[0].Lat
 				replyMessageLonStr, replyMessageLatStr := strconv.FormatFloat(replyMessageLon, 'f', 2, 64), strconv.FormatFloat(replyMessageLat, 'f', 2, 64)
-				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyMessageLonStr)).Do(); err != nil {
-					log.Print(err)
-				}
-				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyMessageLatStr)).Do(); err != nil {
+				replyMessage = res[0] + "から" + res[1] + "を移動しました。都市1の緯度経度は" + replyMessageLonStr + ", " + replyMessageLatStr + "です。"
+				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyMessage)).Do(); err != nil {
 					log.Print(err)
 				}
 			case *linebot.StickerMessage:
