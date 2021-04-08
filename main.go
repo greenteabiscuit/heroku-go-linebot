@@ -1,18 +1,28 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/line/line-bot-sdk-go/linebot"
 )
 
+// Geolocation ...
+type Geolocation struct {
+	Name string  `json:"name"`
+	Lon  float64 `json:"lon"`
+	Lat  float64 `json:"lat"`
+}
+
 func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello world!\n")
+	fmt.Fprintf(w, "what")
 }
 
 func lineHandler(w http.ResponseWriter, r *http.Request) {
@@ -41,6 +51,42 @@ func lineHandler(w http.ResponseWriter, r *http.Request) {
 				res := strings.Split(replyMessage, ",")
 				replyMessage = res[0] + "から" + res[1] + "を移動しました"
 				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyMessage)).Do(); err != nil {
+					log.Print(err)
+				}
+				key := os.Getenv("OPENWEATHER_API_KEY")
+				url := "http://api.openweathermap.org/geo/1.0/direct?q=" + res[0] + "&limit=5&appid=" + key
+				spaceClient := http.Client{
+					Timeout: time.Second * 2, // Timeout after 2 seconds
+				}
+				req, err := http.NewRequest(http.MethodGet, url, nil)
+				if err != nil {
+					fmt.Fprintf(w, "bye\n")
+				}
+				req.Header.Set("User-Agent", "experiment")
+
+				res, getErr := spaceClient.Do(req)
+				if getErr != nil {
+					log.Fatal(getErr)
+				}
+
+				if res.Body != nil {
+					defer res.Body.Close()
+				}
+
+				body, readErr := ioutil.ReadAll(res.Body)
+				if readErr != nil {
+					log.Fatal(readErr)
+				}
+				var gl []Geolocation
+				jsonErr := json.Unmarshal([]byte(body), &gl)
+				if jsonErr != nil {
+					log.Fatal(jsonErr)
+				}
+				replyMessageLon, replyMessageLat := gl[0].Lon, gl[0].Lat
+				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyMessageLon)).Do(); err != nil {
+					log.Print(err)
+				}
+				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyMessageLat)).Do(); err != nil {
 					log.Print(err)
 				}
 			case *linebot.StickerMessage:
