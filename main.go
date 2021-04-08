@@ -83,10 +83,11 @@ func lineHandler(w http.ResponseWriter, r *http.Request) {
 					log.Fatal(jsonErr)
 				}
 				replyMessageLon, replyMessageLat := gl[0].Lon, gl[0].Lat
-				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyMessageLon)).Do(); err != nil {
+				replyMessageLonStr, replyMessageLatStr := strconv.FormatFloat(replyMessageLon, 'f', 2, 64), strconv.FormatFloat(replyMessageLat, 'f', 2, 64)
+				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyMessageLonStr)).Do(); err != nil {
 					log.Print(err)
 				}
-				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyMessageLat)).Do(); err != nil {
+				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyMessageLatStr)).Do(); err != nil {
 					log.Print(err)
 				}
 			case *linebot.StickerMessage:
