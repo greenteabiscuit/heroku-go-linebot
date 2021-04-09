@@ -95,7 +95,7 @@ func lineHandler(w http.ResponseWriter, r *http.Request) {
 				lonStr2, latStr2 := strconv.FormatFloat(lon2, 'f', 2, 64), strconv.FormatFloat(lat2, 'f', 2, 64)
 
 				distStr := strconv.Itoa(int(distance(lat1, lon1, lat2, lon2, "K")))
-				replyMessage = res[0] + "から" + res[1] + "を移動しました。" + res[0] + "の緯度経度は" + lonStr1 + ", " + latStr1 + "です。" + res[1] + "の緯度経度は" + lonStr2 + ", " + latStr2 + "です。" + "距離は" + distStr + "です。"
+				replyMessage = res[0] + "から" + res[1] + "を移動しました。" + res[0] + "の緯度経度は" + lonStr1 + ", " + latStr1 + "です。" + res[1] + "の緯度経度は" + lonStr2 + ", " + latStr2 + "です。" + "距離は" + distStr + "kmです。"
 				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyMessage)).Do(); err != nil {
 					log.Print(err)
 				}
