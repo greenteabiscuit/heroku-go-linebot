@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"math"
 	"net/http"
 	"os"
 	"strconv"
@@ -93,7 +94,8 @@ func lineHandler(w http.ResponseWriter, r *http.Request) {
 				lon2, lat2 := gl2[0].Lon, gl2[0].Lat
 				lonStr2, latStr2 := strconv.FormatFloat(lon2, 'f', 2, 64), strconv.FormatFloat(lat2, 'f', 2, 64)
 
-				replyMessage = res[0] + "から" + res[1] + "を移動しました。" + res[0] + "の緯度経度は" + lonStr1 + ", " + latStr1 + "です。" + res[1] + "の緯度経度は" + lonStr2 + ", " + latStr2 + "です。"
+				distStr := strconv.Itoa(int(distance(lat1, lon1, lat2, lon2, "K")))
+				replyMessage = res[0] + "から" + res[1] + "を移動しました。" + res[0] + "の緯度経度は" + lonStr1 + ", " + latStr1 + "です。" + res[1] + "の緯度経度は" + lonStr2 + ", " + latStr2 + "です。" + "距離は" + distStr + "です。"
 				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyMessage)).Do(); err != nil {
 					log.Print(err)
 				}
@@ -106,6 +108,36 @@ func lineHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
+}
+
+func distance(lat1 float64, lng1 float64, lat2 float64, lng2 float64, unit ...string) float64 {
+	const PI float64 = 3.141592653589793
+
+	radlat1 := float64(PI * lat1 / 180)
+	radlat2 := float64(PI * lat2 / 180)
+
+	theta := float64(lng1 - lng2)
+	radtheta := float64(PI * theta / 180)
+
+	dist := math.Sin(radlat1)*math.Sin(radlat2) + math.Cos(radlat1)*math.Cos(radlat2)*math.Cos(radtheta)
+
+	if dist > 1 {
+		dist = 1
+	}
+
+	dist = math.Acos(dist)
+	dist = dist * 180 / PI
+	dist = dist * 60 * 1.1515
+
+	if len(unit) > 0 {
+		if unit[0] == "K" {
+			dist = dist * 1.609344
+		} else if unit[0] == "N" {
+			dist = dist * 0.8684
+		}
+	}
+
+	return dist
 }
 
 func main() {
