@@ -12,6 +12,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/joho/godotenv"
 	"github.com/line/line-bot-sdk-go/linebot"
 )
 
@@ -27,6 +28,12 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func lineHandler(w http.ResponseWriter, r *http.Request) {
+	if os.Getenv("USE_GAE") != "1" {
+		err := godotenv.Load()
+		if err != nil {
+			panic(err)
+		}
+	}
 	bot, err := linebot.New(
 		os.Getenv("CHANNEL_SECRET"),
 		os.Getenv("ACCESS_TOKEN"),
