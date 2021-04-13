@@ -14,5 +14,6 @@ RUN go build main.go
 # runtime image
 FROM alpine
 COPY --from=builder /go/src/backend /app
+WORKDIR /app
 
 CMD /app/main $PORT
