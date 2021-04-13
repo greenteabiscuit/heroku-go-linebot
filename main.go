@@ -28,7 +28,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func lineHandler(w http.ResponseWriter, r *http.Request) {
-	if os.Getenv("USE_GAE") != "1" {
+	if os.Getenv("USE_HEROKU") != "1" {
 		err := godotenv.Load()
 		if err != nil {
 			panic(err)
