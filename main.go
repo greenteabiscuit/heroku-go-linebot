@@ -28,8 +28,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func lineHandler(w http.ResponseWriter, r *http.Request) {
-	if os.Getenv("IS_LOCAL") == "1" {
-		err := godotenv.Load()
+	if os.Getenv("USE_HEROKU") != "1" {
+		err := godotenv.Load("/app/.env")
 		if err != nil {
 			panic(err)
 		}
