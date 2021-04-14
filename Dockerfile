@@ -11,6 +11,10 @@ RUN go get github.com/line/line-bot-sdk-go/linebot
 RUN go get github.com/joho/godotenv
 RUN go get -u gorm.io/gorm
 RUN go get gorm.io/driver/mysql
+RUN go get github.com/golang-migrate/migrate
+RUN go get github.com/golang-migrate/migrate/database/mysql
+RUN go get github.com/golang-migrate/migrate/source/file
+RUN go get github.com/pkg/errors
 RUN go build main.go
 
 # runtime image
