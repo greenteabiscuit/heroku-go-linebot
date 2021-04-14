@@ -14,6 +14,8 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/line/line-bot-sdk-go/linebot"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 // Geolocation ...
@@ -41,6 +43,13 @@ func lineHandler(w http.ResponseWriter, r *http.Request) {
 	)
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	dsn := os.Getenv("DATABASE_URL")
+	_, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+
+	if err != nil {
+		fmt.Println("err opening db")
 	}
 
 	events, err := bot.ParseRequest(r)
