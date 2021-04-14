@@ -6,6 +6,7 @@
 package main
 
 import (
+	"database/sql"
 	"flag"
 	"fmt"
 	"os"
@@ -17,7 +18,6 @@ import (
 	_ "github.com/golang-migrate/migrate/source/file"
 	"github.com/joho/godotenv"
 	"github.com/pkg/errors"
-	"gorm.io/gorm"
 )
 
 var migrationFilePath = "file://./migration/migrations/"
@@ -86,8 +86,8 @@ func generateDsn() string {
 }
 
 func newMigrate() *migrate.Migrate {
-	dsn := os.Getenv("DATABASE_URL")
-	db, openErr := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	dsn := generateDsn()
+	db, openErr := sql.Open("mysql", dsn)
 	if openErr != nil {
 		fmt.Println(errors.Wrap(openErr, "error occurred. sql.Open()"))
 		os.Exit(1)
