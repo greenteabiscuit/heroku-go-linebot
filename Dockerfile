@@ -15,14 +15,14 @@ RUN go get github.com/golang-migrate/migrate
 RUN go get github.com/golang-migrate/migrate/database/mysql
 RUN go get github.com/golang-migrate/migrate/source/file
 RUN go get github.com/pkg/errors
-RUN go build main.go
+
+RUN GOOS=linux GOARCH=amd64 go build -o /main
 
 # runtime image
 FROM alpine
 RUN apk update \
   && apk add --no-cache git curl make gcc g++
-COPY --from=builder /go/src/backend /app
-WORKDIR /app
+COPY --from=builder /main .
 
 ENV PORT=${PORT}
-ENTRYPOINT ["/app/main web"]
+ENTRYPOINT ["/main"]
