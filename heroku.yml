@@ -9,4 +9,4 @@ release:
   command:
     - make up_migrate_prod
 run:
-  web: /app/main
+  web: /main
