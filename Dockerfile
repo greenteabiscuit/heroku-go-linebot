@@ -24,4 +24,5 @@ RUN apk update \
 COPY --from=builder /go/src/backend /app
 WORKDIR /app
 
-CMD /app/main $PORT
+ENV PORT=${PORT}
+ENTRYPOINT ["/app/main web"]
