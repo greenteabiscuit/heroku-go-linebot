@@ -6,7 +6,6 @@
 package main
 
 import (
-	"database/sql"
 	"flag"
 	"fmt"
 	"os"
@@ -18,6 +17,7 @@ import (
 	_ "github.com/golang-migrate/migrate/source/file"
 	"github.com/joho/godotenv"
 	"github.com/pkg/errors"
+	"gorm.io/gorm"
 )
 
 var migrationFilePath = "file://./migration/migrations/"
@@ -33,9 +33,11 @@ func main() {
 		os.Exit(1)
 	}
 
-	err := godotenv.Load()
-	if err != nil {
-		fmt.Println(errors.Wrap(err, "load error .env"))
+	if os.Getenv("USE_HEROKU") != "1" {
+		err := godotenv.Load()
+		if err != nil {
+			fmt.Println(errors.Wrap(err, "load error .env"))
+		}
 	}
 
 	m := newMigrate()
@@ -84,9 +86,8 @@ func generateDsn() string {
 }
 
 func newMigrate() *migrate.Migrate {
-	dsn := generateDsn()
-
-	db, openErr := sql.Open("mysql", dsn)
+	dsn := os.Getenv("DATABASE_URL")
+	db, openErr := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if openErr != nil {
 		fmt.Println(errors.Wrap(openErr, "error occurred. sql.Open()"))
 		os.Exit(1)
