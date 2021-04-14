@@ -25,6 +25,10 @@ type Geolocation struct {
 	Lat  float64 `json:"lat"`
 }
 
+type User struct {
+	Name string
+}
+
 func handler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "what")
 }
@@ -46,11 +50,14 @@ func lineHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	dsn := os.Getenv("DATABASE_URL")
-	_, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {
 		fmt.Println("err opening db")
 	}
+
+	var user1 = User{Name: "hello world"}
+	db.Create(&user1)
 
 	events, err := bot.ParseRequest(r)
 	if err != nil {
