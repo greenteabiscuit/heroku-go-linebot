@@ -56,7 +56,9 @@ func lineHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var user1 = User{Name: "hello world"}
-	db.Create(&user1)
+	if err := db.Create(&user1).Error; err != nil {
+		fmt.Println(err)
+	}
 
 	events, err := bot.ParseRequest(r)
 	if err != nil {
