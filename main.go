@@ -51,7 +51,6 @@ func lineHandler(w http.ResponseWriter, r *http.Request) {
 
 	dsn := os.Getenv("DATABASE_URL")
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-
 	if err != nil {
 		fmt.Println("err opening db")
 	}
