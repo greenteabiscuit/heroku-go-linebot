@@ -166,7 +166,7 @@ func distance(lat1 float64, lng1 float64, lat2 float64, lng2 float64, unit ...st
 }
 
 func main() {
-	port, _ := strconv.Atoi(os.Args[1])
+	port := os.Getenv("PORT")
 	fmt.Printf("Starting server at Port %d", port)
 	http.HandleFunc("/", handler)
 	http.HandleFunc("/callback", lineHandler)
