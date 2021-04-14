@@ -50,14 +50,14 @@ func lineHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	dsn := os.Getenv("DATABASE_URL")
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	_, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {
 		fmt.Println("err opening db")
 	}
 
-	var user1 = User{Name: "hello world"}
-	db.Create(&user1)
+	//var user1 = User{Name: "hello world"}
+	//db.Create(&user1)
 
 	events, err := bot.ParseRequest(r)
 	if err != nil {

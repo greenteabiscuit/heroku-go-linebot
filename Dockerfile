@@ -24,4 +24,4 @@ RUN apk update \
 COPY --from=builder /go/src/backend /app
 WORKDIR /app
 
-CMD /app/main $PORT
+CMD /app/main 8080
