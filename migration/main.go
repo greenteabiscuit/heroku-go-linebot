@@ -71,7 +71,7 @@ func generateDsn() string {
 	var dsn string
 
 	if apiRevision == "release" {
-		dsn = os.Getenv("DATABASE_URL") + "?multiStatements=true" // heroku対応
+		dsn = os.Getenv("DATABASE_URL") + "&multiStatements=true" // heroku対応
 	} else {
 		user := os.Getenv("DB_USERNAME")
 		pass := os.Getenv("DB_PASSWORD")
