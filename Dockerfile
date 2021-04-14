@@ -10,6 +10,7 @@ WORKDIR /go/src/backend
 RUN go get github.com/line/line-bot-sdk-go/linebot
 RUN go get github.com/joho/godotenv
 RUN go get -u gorm.io/gorm
+RUN go get gorm.io/driver/mysql
 RUN go build main.go
 
 # runtime image
